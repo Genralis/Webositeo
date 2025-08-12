@@ -475,8 +475,32 @@ async function updateSubscriberCount() {
     }
 }
 
-// Update subscriber count on page load
+// Function to fetch and update events count
+async function updateEventsCount() {
+    try {
+        const response = await fetch('/api/events-count');
+        const data = await response.json();
+        
+        if (data.success) {
+            const eventsCountElement = document.getElementById('eventsCount');
+            if (eventsCountElement) {
+                // Animate the counter to the new value
+                const currentCount = parseInt(eventsCountElement.textContent) || 0;
+                const targetCount = data.count;
+                
+                if (currentCount !== targetCount) {
+                    animateCounter(eventsCountElement, targetCount, 1000);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching events count:', error);
+    }
+}
+
+// Update counts on page load
 updateSubscriberCount();
+updateEventsCount();
 
 // Load and display events dynamically
 async function loadEvents() {
@@ -486,6 +510,8 @@ async function loadEvents() {
         
         if (data.success) {
             displayEvents(data.events);
+            // Update events count after loading events
+            updateEventsCount();
         } else {
             console.error('Failed to load events');
         }

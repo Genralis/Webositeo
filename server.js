@@ -234,6 +234,16 @@ app.get('/api/contacts-count', (req, res) => {
     res.json({ success: true, count: contacts.length });
 });
 
+// Get events count for current year
+app.get('/api/events-count', (req, res) => {
+    const currentYear = new Date().getFullYear();
+    const eventsThisYear = events.filter(event => {
+        const eventYear = new Date(event.date).getFullYear();
+        return eventYear === currentYear;
+    });
+    res.json({ success: true, count: eventsThisYear.length });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ 
