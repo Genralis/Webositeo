@@ -435,6 +435,46 @@ section {
     margin-right: 0.5rem;
 }
 
+.loading-events {
+    text-align: center;
+    padding: 3rem;
+    color: #e0e0e0;
+}
+
+.loading-events i {
+    font-size: 2rem;
+    color: #00ff88;
+    margin-bottom: 1rem;
+}
+
+.event-card.full {
+    opacity: 0.6;
+}
+
+.event-card.full .btn-primary {
+    background: #666;
+    cursor: not-allowed;
+}
+
+.event-card.full::after {
+    content: 'FULL';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #ff4444;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.attendee-count {
+    font-size: 0.9rem;
+    color: #00ff88;
+    margin-top: 0.5rem;
+}
+
 /* Gallery Section */
 .gallery {
     background: #0f0f0f;

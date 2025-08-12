@@ -478,4 +478,99 @@ async function updateSubscriberCount() {
 // Update subscriber count on page load
 updateSubscriberCount();
 
+// Load and display events dynamically
+async function loadEvents() {
+    try {
+        const response = await fetch('/api/events');
+        const data = await response.json();
+        
+        if (data.success) {
+            displayEvents(data.events);
+        } else {
+            console.error('Failed to load events');
+        }
+    } catch (error) {
+        console.error('Error loading events:', error);
+    }
+}
+
+function displayEvents(events) {
+    const eventsGrid = document.getElementById('eventsGrid');
+    if (!eventsGrid) return;
+    
+    if (events.length === 0) {
+        eventsGrid.innerHTML = `
+            <div class="loading-events">
+                <i class="fas fa-calendar-times"></i>
+                <p>No upcoming events at the moment</p>
+            </div>
+        `;
+        return;
+    }
+    
+    eventsGrid.innerHTML = events.map(event => {
+        const eventDate = new Date(event.date);
+        const day = eventDate.getDate();
+        const month = eventDate.toLocaleDateString('en-US', { month: 'short' });
+        const isFull = event.currentAttendees >= event.maxAttendees;
+        
+        return `
+            <div class="event-card ${isFull ? 'full' : ''}" data-event-id="${event.id}">
+                <div class="event-date">
+                    <span class="day">${day}</span>
+                    <span class="month">${month}</span>
+                </div>
+                <div class="event-content">
+                    <h3>${event.title}</h3>
+                    <p>${event.description}</p>
+                    <div class="event-meta">
+                        <span><i class="fas fa-clock"></i> ${event.time} - ${event.duration}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                        <div class="attendee-count">
+                            <i class="fas fa-users"></i> ${event.currentAttendees}/${event.maxAttendees} attendees
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="registerForEvent(${event.id})" ${isFull ? 'disabled' : ''}>
+                        ${isFull ? 'Event Full' : 'Register'}
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function registerForEvent(eventId) {
+    const name = prompt('Enter your name:');
+    if (!name) return;
+    
+    const email = prompt('Enter your email:');
+    if (!email) return;
+    
+    try {
+        const response = await fetch('/api/register-event', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ eventId, name, email })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification(data.message, 'success');
+            // Reload events to update attendee count
+            loadEvents();
+        } else {
+            showNotification(data.message, 'error');
+        }
+    } catch (error) {
+        console.error('Event registration error:', error);
+        showNotification('Network error. Please try again.', 'error');
+    }
+}
+
+// Load events on page load
+loadEvents();
+
  

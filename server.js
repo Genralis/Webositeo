@@ -9,9 +9,53 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('.')); // Serve static files from current directory
 
-// Simple in-memory storage (replace with database in production)
+// Enhanced in-memory storage (replace with database in production)
 const subscribers = [];
 const contacts = [];
+const eventRegistrations = [];
+
+// Real-time events data
+const events = [
+    {
+        id: 1,
+        title: "AI Project Showcase",
+        date: "2024-12-15",
+        time: "14:00",
+        duration: "2 hours",
+        location: "Computer Lab 201",
+        description: "Present your AI projects and get feedback from peers and mentors. Open to all skill levels!",
+        maxAttendees: 50,
+        currentAttendees: 0,
+        status: "upcoming",
+        category: "showcase"
+    },
+    {
+        id: 2,
+        title: "Machine Learning Workshop",
+        date: "2024-12-22",
+        time: "15:30",
+        duration: "1.5 hours",
+        location: "AI Lab",
+        description: "Hands-on workshop on building and training ML models. Bring your laptops!",
+        maxAttendees: 30,
+        currentAttendees: 0,
+        status: "upcoming",
+        category: "workshop"
+    },
+    {
+        id: 3,
+        title: "Competition Prep Session",
+        date: "2025-01-05",
+        time: "13:00",
+        duration: "3 hours",
+        location: "Innovation Hub",
+        description: "Prepare for upcoming AI competitions with strategy sessions and team formation.",
+        maxAttendees: 40,
+        currentAttendees: 0,
+        status: "upcoming",
+        category: "competition"
+    }
+];
 
 // Newsletter subscription endpoint
 app.post('/api/subscribe', async (req, res) => {
@@ -80,24 +124,104 @@ app.post('/api/contact', async (req, res) => {
     }
 });
 
-// Event registration endpoint
+// Enhanced newsletter management endpoints
+app.get('/api/subscribers-count', (req, res) => {
+    res.json({ success: true, count: subscribers.length });
+});
+
+app.get('/api/subscribers', (req, res) => {
+    res.json({ success: true, subscribers: subscribers });
+});
+
+app.delete('/api/unsubscribe/:email', (req, res) => {
+    const { email } = req.params;
+    const index = subscribers.indexOf(email);
+    if (index > -1) {
+        subscribers.splice(index, 1);
+        res.json({ success: true, message: 'Successfully unsubscribed' });
+    } else {
+        res.status(404).json({ success: false, message: 'Email not found' });
+    }
+});
+
+// Event management endpoints
+app.get('/api/events', (req, res) => {
+    res.json({ success: true, events: events });
+});
+
+app.get('/api/events/:id', (req, res) => {
+    const event = events.find(e => e.id === parseInt(req.params.id));
+    if (event) {
+        res.json({ success: true, event });
+    } else {
+        res.status(404).json({ success: false, message: 'Event not found' });
+    }
+});
+
+app.post('/api/events', (req, res) => {
+    const { title, date, time, location, description, maxAttendees, category } = req.body;
+    const newEvent = {
+        id: events.length + 1,
+        title,
+        date,
+        time,
+        duration: "2 hours",
+        location,
+        description,
+        maxAttendees: maxAttendees || 50,
+        currentAttendees: 0,
+        status: "upcoming",
+        category: category || "general"
+    };
+    events.push(newEvent);
+    res.json({ success: true, event: newEvent });
+});
+
+// Enhanced event registration
 app.post('/api/register-event', async (req, res) => {
     try {
-        const { eventTitle, name, email } = req.body;
+        const { eventId, name, email } = req.body;
         
-        if (!eventTitle || !name || !email) {
-            return res.status(400).json({ success: false, message: 'Event title, name, and email are required' });
+        if (!eventId || !name || !email) {
+            return res.status(400).json({ success: false, message: 'Event ID, name, and email are required' });
         }
         
-        // Log the registration
-        console.log('New event registration:', { eventTitle, name, email });
+        const event = events.find(e => e.id === parseInt(eventId));
+        if (!event) {
+            return res.status(404).json({ success: false, message: 'Event not found' });
+        }
         
-        // Here you would typically:
-        // 1. Save to database
-        // 2. Send confirmation email
-        // 3. Add to event attendees list
+        if (event.currentAttendees >= event.maxAttendees) {
+            return res.status(400).json({ success: false, message: 'Event is full' });
+        }
         
-        res.json({ success: true, message: `Successfully registered for: ${eventTitle}` });
+        // Check if already registered
+        const existingRegistration = eventRegistrations.find(r => 
+            r.eventId === parseInt(eventId) && r.email === email
+        );
+        
+        if (existingRegistration) {
+            return res.status(400).json({ success: false, message: 'Already registered for this event' });
+        }
+        
+        // Add registration
+        eventRegistrations.push({
+            eventId: parseInt(eventId),
+            name,
+            email,
+            date: new Date()
+        });
+        
+        // Update event attendee count
+        event.currentAttendees++;
+        
+        console.log('New event registration:', { eventTitle: event.title, name, email });
+        
+        res.json({ 
+            success: true, 
+            message: `Successfully registered for: ${event.title}`,
+            event: event
+        });
         
     } catch (error) {
         console.error('Event registration error:', error);
@@ -105,23 +229,20 @@ app.post('/api/register-event', async (req, res) => {
     }
 });
 
-// Get subscribers count (for admin purposes)
-app.get('/api/subscribers-count', (req, res) => {
-    res.json({ count: subscribers.length });
-});
-
-// Get contacts count (for admin purposes)
+// Get contacts count
 app.get('/api/contacts-count', (req, res) => {
-    res.json({ count: contacts.length });
+    res.json({ success: true, count: contacts.length });
 });
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     res.json({ 
-        status: 'OK', 
-        timestamp: new Date().toISOString(),
+        status: 'healthy', 
         subscribers: subscribers.length,
-        contacts: contacts.length
+        contacts: contacts.length,
+        events: events.length,
+        eventRegistrations: eventRegistrations.length,
+        timestamp: new Date().toISOString()
     });
 });
 
