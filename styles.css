@@ -43,10 +43,32 @@ body {
     align-items: center;
 }
 
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    color: #2563eb;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+}
+
 .nav-logo h2 {
     color: #2563eb;
     font-weight: 700;
     font-size: 1.8rem;
+    margin: 0;
 }
 
 .nav-menu {
@@ -616,6 +638,23 @@ section {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.footer-logo-icon {
+    font-size: 1.5rem;
+    color: #2563eb;
+}
+
+.footer-logo-img {
+    height: 30px;
+    width: auto;
 }
 
 .footer-section h3,
