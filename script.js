@@ -92,6 +92,8 @@ if (newsletterForm) {
             if (data.success) {
                 showNotification('Thank you for subscribing to our AI newsletter!', 'success');
                 this.reset();
+                // Update subscriber count after successful subscription
+                setTimeout(updateSubscriberCount, 1000);
             } else {
                 showNotification(data.message || 'Something went wrong. Please try again.', 'error');
             }
@@ -448,4 +450,32 @@ const statsObserver = new IntersectionObserver((entries) => {
 const statsSection = document.querySelector('.about-stats');
 if (statsSection) {
     statsObserver.observe(statsSection);
-} 
+}
+
+// Function to fetch and update subscriber count
+async function updateSubscriberCount() {
+    try {
+        const response = await fetch('/api/subscribers-count');
+        const data = await response.json();
+        
+        if (data.success) {
+            const memberCountElement = document.getElementById('memberCount');
+            if (memberCountElement) {
+                // Animate the counter to the new value
+                const currentCount = parseInt(memberCountElement.textContent) || 0;
+                const targetCount = data.count;
+                
+                if (currentCount !== targetCount) {
+                    animateCounter(memberCountElement, targetCount, 1000);
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching subscriber count:', error);
+    }
+}
+
+// Update subscriber count on page load
+updateSubscriberCount();
+
+ 
