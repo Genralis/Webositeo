@@ -26,13 +26,7 @@ Genralis/
 └── README.md           # This file
 ```
 
-## Getting Started
 
-1. **Open the website**: Simply open `index.html` in your web browser
-2. **Local development**: Use a local server for the best experience:
-   - Python: `python -m http.server 8000`
-   - Node.js: `npx serve .`
-   - VS Code: Use the Live Server extension
 
 ## Customization Guide
 
@@ -152,109 +146,7 @@ Update the statistics in the about section:
 - Edge (latest)
 - Mobile browsers
 
-## Performance Tips
+#
 
-1. **Optimize Images**: Compress images before uploading
-2. **Use WebP Format**: For better compression (with fallbacks)
-3. **Minify Code**: For production deployment
-4. **Enable Caching**: Configure server caching headers
-
-## Deployment Options
-
-### GitHub Pages
-1. Create a GitHub repository
-2. Upload your files
-3. Enable GitHub Pages in repository settings
-4. Your site will be available at `https://username.github.io/repository-name`
-
-### Netlify
-1. Drag and drop your folder to Netlify
-2. Get a custom domain (optional)
-3. Automatic deployments from Git
-
-### Vercel
-1. Connect your GitHub repository
-2. Automatic deployments
-3. Custom domain support
-
-### Traditional Web Hosting
-1. Upload files via FTP
-2. Configure domain settings
-3. Set up SSL certificate
-
-## Customization Examples
-
-### Adding a New Section
-
-```html
-<section id="new-section" class="new-section">
-    <div class="container">
-        <h2 class="section-title">New Section</h2>
-        <div class="content">
-            <!-- Your content here -->
-        </div>
-    </div>
-</section>
-```
-
-### Adding Custom CSS
-
-```css
-.new-section {
-    background: #f8fafc;
-    padding: 80px 0;
-}
-
-.new-section .content {
-    /* Your styles here */
-}
-```
-
-### Adding JavaScript Functionality
-
-```javascript
-// Your custom JavaScript here
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize your features
-});
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Images not loading**: Check file paths and ensure images exist
-2. **Fonts not loading**: Verify internet connection for Google Fonts
-3. **Mobile menu not working**: Check JavaScript console for errors
-4. **Form not submitting**: Ensure all required fields are filled
-
-### Debug Mode
-
-Add this to your browser console to enable debug mode:
-
-```javascript
-localStorage.setItem('debug', 'true');
-```
-
-## Support
-
-For questions or issues:
-1. Check the browser console for error messages
-2. Verify all file paths are correct
-3. Test in different browsers
-4. Check mobile responsiveness
-
-## License
-
-This project is open source and available under the MIT License.
-
-## Credits
-
-- **Fonts**: Google Fonts (Poppins)
-- **Icons**: Font Awesome
-- **Images**: Unsplash (placeholder images)
-- **Design**: Custom design for Genralis school club
-
----
 
 **Made with ❤️ for Genralis School Club** 
